@@ -4,10 +4,24 @@ const mongoose = require('mongoose');
 const app = express();
 const { Player, Team } = require('./loginAndPlayer/modelsAndDatabases/databaseInit');
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const gettingResult = require('./winner')
+const rungame = require('./rungame')
 
-//multer is used here for file upload
 
+//multer is used here for file upload most of it given in the documentaition 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'ProgBattle/uploads/');
+  },
+  filename: function (req, file, cb) {
+    const originalExt = path.extname(file.originalname);
+    const baseName = path.basename(file.originalname, originalExt);
+    const safeName = baseName.replace(/[^a-zA-Z0-9_-]/g, ''); // sanitize filename
+    cb(null, safeName + originalExt);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 // MongoDB Connection
 mongoose.connect('mongodb+srv://eugenewoolf220205:kooaC97J1UjrWTSk@cluster0.neq5rqb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
@@ -76,6 +90,8 @@ app.get("/progbattle/team/", (req, res) => {
 })
 
 app.post("/progbattle/round1",  upload.single('botFile'), (req, res) => {
+  //here the round 1 begins
+  //rungame()
   res.send("Find uploaded successfully")
 })
 
