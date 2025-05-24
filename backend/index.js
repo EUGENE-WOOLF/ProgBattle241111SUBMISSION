@@ -4,8 +4,13 @@ const mongoose = require('mongoose');
 const app = express();
 const { Player, Team } = require('./loginAndPlayer/modelsAndDatabases/databaseInit');
 const multer  = require('multer')
-const gettingResult = require('./winner')
 const rungame = require('./rungame')
+const getResultFromCSV = require('./winner'); 
+
+
+//setting up ejs for seding dynamic response
+app.set('views' , 'ejs')
+app.set('views', path.join(__dirname, 'views'));
 
 
 //multer is used here for file upload most of it given in the documentaition 
@@ -31,21 +36,6 @@ mongoose.connect('mongodb+srv://eugenewoolf220205:kooaC97J1UjrWTSk@cluster0.neq5
 .then(() => console.log("Connected to MongoDB Atlas"))
 .catch((err) => console.error("Connection error:", err));
 
-//this servers the static files in the directory app.css her
-// Serve login page assets at /progbattle/login/*
-//middleware part
-// app.use(express.static(path.join(__dirname, 'public')));
-
-// app.use(
-//   '/progbattle/login',
-//   express.static(path.join(__dirname, 'loginAndPlayer', 'loginPage'))
-// );
-
-// // Serve dashboard assets at /progbattle/dashboard/*
-// app.use(
-//   '/progbattle/dashboard',
-//   express.static(path.join(__dirname, 'dashboard'))
-// );
 
 
 app.use(
@@ -60,7 +50,7 @@ app.use(express.json())
 
 // Routes for the html pages
 app.get("/progbattle/login", (req, res) => {
-   res.sendFile(path.join(__dirname, 'public', 'loginPage', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'loginPage', 'index.html'));
 });
 
 app.get('/progbattle/dashboard', (req, res) => {
@@ -89,21 +79,92 @@ app.get("/progbattle/team/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'team', 'index.html'))
 })
 
-app.post("/progbattle/round1",  upload.single('botFile'), (req, res) => {
+
+
+// VERY UNCOVENTIAL SOLUTION THE CODE TAKES TIME TO RUN AND WE NEED TO RETURN A PROMISE 
+
+
+app.post("/progbattle/round1",  upload.single('botFile'), async (req, res) => {
   //here the round 1 begins
-  //rungame()
-  res.send("Find uploaded successfully")
+  try {
+    await rungame()
+    const result = getResultFromCSV(path.join(__dirname, 'ProgBattle', 'game_log.csv'));
+    const {scoreBot1:playerScore, scoreBot2:botScore ,winner } = result;
+    console.log(playerScore, winner);
+    console.log("Game Result:", result);
+    res.render('codecompleted.ejs', {playerScore, botScore ,winner})
+    //please wait a few second 3 to be exact and
+  } catch (error) {
+    console.log("THRE WAS AN ERROR")
+  }
+  
 })
 
-app.post('/progbattle/login', (req, res) => {
-
-    console.log("it is reaching here")
-    console.log(req.body)
-    res.redirect('/progbattle/dashboard')
-    //adding the palyer to database
+app.post('/progbattle/login', async (req, res) => {
+  //login saves the files in mongodb atlas
+  console.log("it is reaching here")
+  console.log(req.body)
+  const {username : uname , userEmail : umail, password : upassword} = req.body
+  let p1 = new Player({
+    username : uname,
+    userEmail : umail,
+    password : upassword 
+  })
+  await p1.save()
+  res.redirect('/progbattle/dashboard')
+  //adding the palyer to database
 })
 
 
 app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+  console.log("Server running on http://localhost:3000");
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+//this servers the static files in the directory app.css her
+// Serve login page assets at /progbattle/login/*
+//middleware part
+// app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use(
+//   '/progbattle/login',
+//   express.static(path.join(__dirname, 'loginAndPlayer', 'loginPage'))
+// );
+
+// // Serve dashboard assets at /progbattle/dashboard/*
+// app.use(
+//   '/progbattle/dashboard',
+//   express.static(path.join(__dirname, 'dashboard'))
+// );
