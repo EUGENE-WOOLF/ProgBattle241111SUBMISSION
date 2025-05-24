@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProgBattle</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./style.css">
+
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --text-color: #1c1c1e;
+            --accent-color: #4f46e5;
+            --nav-bg: #ffffff;
+            --nav-text: #333;
+            --card-bg: #ffffff;
+            --card-border: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+        }
+
+        nav {
+            background-color: var(--nav-bg);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        nav a {
+            color: var(--nav-text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        main section {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-note {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <nav>
+            <a href="http://localhost:3000/progbattle/dashboard/">Home</a>
+            <a href="http://localhost:3000/progbattle/leaderBoard/">Leader Board</a>
+            <a href="http://localhost:3000/progbattle/submitCode/">Your Code</a>
+            <a href="http://localhost:3000/progbattle/team">Team</a>
+        </nav>
+    </section>
+
+    <section>
+        <h1>Welcome to ProgBattle</h1>
+        <h2>— Submission from Ujjwal Prakash</h2>
+    </section>
+
+    <main>
+        <section>
+            <h2>Rules</h2>
+
+            <h3>Round 1</h3>
+            <p>1. Submit a bot that competes with our bot. If it wins, you'll be assigned a team with other registered
+                players.</p>
+
+            <h3>Round 2</h3>
+            <p>2. Your team will consist of 4 members and will compete in scheduled matches.</p>
+            <p>3. Your team must submit the best code to defeat the other team.</p>
+            <p>4. You can challenge other teams on request (non-ranked match).</p>
+        </section>
+
+        <section>
+            <a href="http://localhost:3000/progbattle/round1/"> Start Round 1</a>
+        </section>
+
+        <section>
+            <p class="footer-note">This is a recruitment task, not an actual competition. Want to skip to the next
+                round?</p>
+            <div><a href="http://localhost:3000/progbattle/round2/">Skip to Round 2</a></div>
+        </section>
+    </main>
+</body>
+
+
+</html>
