@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Team Info</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --text-color: #1c1c1e;
+            --accent-color: #4f46e5;
+            --nav-bg: #ffffff;
+            --nav-text: #333;
+            --card-bg: #ffffff;
+            --card-border: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem;
+        }
+
+        nav {
+            background-color: var(--nav-bg);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        nav a {
+            color: var(--nav-text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        #teamBox {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #teamBox>div {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.3s ease;
+        }
+
+        #teamBox>div:hover {
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        ol {
+            padding-left: 1.2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="http://localhost:3000/progbattle/dashboard/">Home</a>
+        <a href="http://localhost:3000/progbattle/leaderBoard/">Leader Board</a>
+        <a href="http://localhost:3000/progbattle/submitCode/">Your Code</a>
+        <a href="http://localhost:3000/progbattle/team">Team</a>
+    </nav>
+
+    <main>
+        <h1>The Teams</h1>
+        <section>
+            <div id="teamBox"></div>
+        </section>
+    </main>
+
+    <script>
+        fetch('http://localhost:3000/progbattle/teams/teaminfo')
+            .then(response => response.json())
+            .then(data => {
+                const div = document.getElementById('teamBox');
+
+                data.forEach(team => {
+                    const teamDiv = document.createElement('div');
+                    const teamName = document.createElement('h2');
+                    const list = document.createElement('ol');
+
+                    teamName.textContent = team.teamName;
+
+                    team.members.forEach(member => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = member.username;
+                        list.appendChild(listItem);
+                    });
+
+                    teamDiv.appendChild(teamName);
+                    teamDiv.appendChild(list);
+                    div.appendChild(teamDiv);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+
+</html>

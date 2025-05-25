@@ -14,5 +14,4 @@ const playerInfo = new mongoose.Schema({
         required : true
     }
 })
-
 module.exports = playerInfo

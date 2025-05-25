@@ -6,6 +6,9 @@ const { Player, Team } = require('./loginAndPlayer/modelsAndDatabases/databaseIn
 const multer  = require('multer')
 const rungame = require('./rungame')
 const getResultFromCSV = require('./winner'); 
+const cors = require('cors');
+
+app.use(cors())
 
 
 //setting up ejs for seding dynamic response
@@ -47,7 +50,6 @@ app.use(express.urlencoded({extended : true})); // it runs for all of the whenev
 app.use(express.json())
 
 
-
 // Routes for the html pages
 app.get("/progbattle/login", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'loginPage', 'index.html'));
@@ -62,8 +64,17 @@ app.get("/progbattle/round1", (req, res) => {
 })
 
 
-app.get("/progbattle/round2", (req, res) => {
+app.get("/progbattle/round2", async (req, res) => {
+
+  try {
+    const allTeamData = await Team.find({})
+    
+  } catch (error) {
+    console.log(error)
+  }
+  
   res.sendFile(path.join(__dirname, 'public', 'round2', 'index.html'))
+  
 })
 
 
@@ -74,12 +85,49 @@ app.get("/progbattle/leaderBoard/", (req, res) => {
 app.get("/progbattle/submitCode/", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'submitCode', 'index.html'))
 })
+//
 
-app.get("/progbattle/team/", (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'team', 'index.html'))
+
+app.get("/progbattle/teams", async (req, res) => {
+  try {
+    const allTeams = [];
+    const allPlayers = await Player.find({});
+
+    const teamSize = 4;
+    const numTeams = 16;             
+    const roster = allPlayers.slice(0, teamSize * numTeams); 
+
+    for (let i = 0; i < numTeams; i++) {
+      const start = i * teamSize;
+      const squad = roster.slice(start, start + teamSize);
+
+      allTeams.push({
+        teamName: `Team ${i + 1}`,  
+        members: squad
+      });
+    }
+    
+    await Team.deleteMany({})
+    await Team.insertMany(allTeams)
+    res.sendFile(path.join(__dirname, 'public', 'team', 'index.html'))
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch teams' });
+  }
+});
+
+
+
+app.get("/progbattle/teams/teaminfo" ,async (req, res) => {
+
+  try {
+    const allTeamData = await Team.find({})
+    // console.log(allTeamData)
+    res.json(allTeamData);
+  } catch (error) {
+    console.log(error)
+  }
 })
-
-
 
 // VERY UNCOVENTIAL SOLUTION THE CODE TAKES TIME TO RUN AND WE NEED TO RETURN A PROMISE 
 
@@ -100,25 +148,29 @@ app.post("/progbattle/round1",  upload.single('botFile'), async (req, res) => {
   
 })
 
+
+
 app.post('/progbattle/login', async (req, res) => {
   //login saves the files in mongodb atlas
   console.log("it is reaching here")
   console.log(req.body)
+  
   const {username : uname , userEmail : umail, password : upassword} = req.body
   let p1 = new Player({
     username : uname,
     userEmail : umail,
     password : upassword 
   })
+
   await p1.save()
   res.redirect('/progbattle/dashboard')
   //adding the palyer to database
 })
 
-
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
 });
+
 
 
 
